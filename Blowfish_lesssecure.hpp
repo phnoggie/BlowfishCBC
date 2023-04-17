@@ -204,6 +204,7 @@ std::string Blowfish::encrypt(std::string *plain) {
     resultStream << std::setfill('0') << std::setw(16) << std::hex << buffer;
     buffer = 0;
   }
+
   //Maybe not the way to do it!
   std::string result = resultStream.str();
   return result;
@@ -255,6 +256,7 @@ std::string Blowfish::decrypt(std::string *encoded) {
       resultStream << (char)((buffer >> (i*8)) & 0xFF);
     }
   }
+
   std::string result = resultStream.str();
   unpad(&result);
 
@@ -276,13 +278,12 @@ void Blowfish::preparePassphrase() {
       start = 0;
     pCounter++;
   }
-  //CBC mode, first buffer is all zero (this was the only way it worked for me)
-  std::string buffer = "\x00000000";
 
   //Blowfish encrypt algorithm
   uint64_t left  = 0;
   uint64_t right = 0;
-  //Encode the sBuffer
+
+  //Encode the pBuffer
   for (int i=0; i<18; i+=2) {
     encodeBlock(&left,&right);
     pBuffer[(i  )] = left;
@@ -348,17 +349,4 @@ void Blowfish::unpad(std::string *text) {
         (*text) += buffer[i];
     }
   }
-}
-
-
-int main() {
-  Blowfish blowfish;
-  std::string string = "Hello World!";
-  std::cout << "Encrypt: " << string << "\n";
-  std::string encrypted = blowfish.encrypt(string);
-  std::cout << "Encrypted: " << encrypted << "\n";
-  std::cout << "Decrypt: " << encrypted << "\n";
-  std::string decrypted = blowfish.decrypt(&encrypted);
-  std::cout << "Decrypted: " << decrypted << "\n";
-  return 0;
 }
