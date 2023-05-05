@@ -191,8 +191,6 @@ void encode_passphrase::preparePassphrase() {
       start = 0;
     pCounter++;
   }
-  //CBC mode, first buffer is all zero (this was the only way it worked for me)
-  std::string buffer = "\x00000000";
 
   //Blowfish encrypt algorithm
   uint64_t left  = 0;
